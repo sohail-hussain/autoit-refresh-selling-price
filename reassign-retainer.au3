@@ -10,6 +10,8 @@ https://github.com/v1lev/ffxiv-simple-crafting-bot/blob/master/auto-craft.au3
 
 #include <MsgBoxConstants.au3>
 
+#include "mouseFunctions.au3"
+
 Func ExitOnCondition($condition, $message)
     If $condition Then
         MsgBox($MB_OK, 'Program stopped', StringFormat('%s', $message))
@@ -55,35 +57,31 @@ Func ReadRetainerLocation($iniFile, $section)
 	Return $RetainerLocation
 EndFunc
 
-Func ClickLocation($caller, $message, $x, $y, $sleepTime)
-	ConsoleWrite('ClickLocation: ' & StringFormat("%s: %s (%d, %d)", $caller, $message, $x, $y) & @CRLF)
-	MouseClick ( "left", $x, $y, 1, 1)
-	Sleep($sleepTime * 1000)
-EndFunc
 
 Func ProcessRetainerAssignment($RetainerNumber, $RetainerLocation)
 	Global $RetainerOk
-	Global $sleepTime
+	Local $sleepTime = 1
 
 	ConsoleWrite('ReadRetainerLocation: Retainer is ' & $RetainerNumber & @CRLF)
 ;	Sleep($sleepTime * 1000)
 
 ; select the retainer
 	ConsoleWrite('ProcessRetainer: left click on ' & $RetainerLocation[$RetainerNumber][0]& "," & $RetainerLocation[$RetainerNumber][1] & @CRLF)
-	ClickLocation ("ProcessRetainerAssignment", "select retainer", $RetainerLocation[$RetainerNumber][0], $RetainerLocation[$RetainerNumber][1], $sleepTime)
-	ClickLocation ("ProcessRetainerAssignment", "OK", $RetainerLocation[$RetainerOk][0], $RetainerLocation[$RetainerOk][1], $sleepTime)
+	LeftClickLocation ("ProcessRetainerAssignment", "select retainer", $RetainerLocation[$RetainerNumber][0], $RetainerLocation[$RetainerNumber][1], $sleepTime)
+	LeftClickLocation ("ProcessRetainerAssignment", "OK", $RetainerLocation[$RetainerOk][0], $RetainerLocation[$RetainerOk][1], $sleepTime)
 
 	; now click report
-	ClickLocation ("ProcessRetainerAssignment", "Report", $RetainerLocation[$VentureReport][0], $RetainerLocation[$VentureReport][1], $sleepTime)
+	LeftClickLocation ("ProcessRetainerAssignment", "Report", $RetainerLocation[$VentureReport][0], $RetainerLocation[$VentureReport][1], $sleepTime)
 
 	; next reassign
-	ClickLocation ("ProcessRetainerAssignment", "reassign", $RetainerLocation[$VentureReassign][0], $RetainerLocation[$VentureReassign][1], $sleepTime)
+	LeftClickLocation ("ProcessRetainerAssignment", "reassign", $RetainerLocation[$VentureReassign][0], $RetainerLocation[$VentureReassign][1], $sleepTime)
 
 	; next assign
-	ClickLocation ("ProcessRetainerAssignment", "assign", $RetainerLocation[$VentureAssign][0], $RetainerLocation[$VentureAssign][1], $sleepTime)
+	LeftClickLocation ("ProcessRetainerAssignment", "assign", $RetainerLocation[$VentureAssign][0], $RetainerLocation[$VentureAssign][1], $sleepTime)
 ; may need an ok click
 	; lastly quit
-	ClickLocation ("ProcessRetainerAssignment", "quit", $RetainerLocation[$RetainerQuit][0], $RetainerLocation[$RetainerQuit][1], $sleepTime)
+	LeftClickLocation ("ProcessRetainerAssignment", "quit", $RetainerLocation[$RetainerQuit][0], $RetainerLocation[$RetainerQuit][1], $sleepTime)
+	LeftClickLocation ("ProcessRetainerAssignment", "OK", $RetainerLocation[$RetainerOk][0], $RetainerLocation[$RetainerOk][1], $sleepTime)
 ; may need an ok click
 
 EndFunc
@@ -116,16 +114,12 @@ ConsoleWrite('Main: ' & StringFormat("winName is %s", $winName) & @CRLF)
 
 ; grab the window
 $hWin = WinGetHandle($winName)
-Sleep(5000)
-ConsoleWrite('moving to 1000 1000 ' & @CRLF)
-MouseMove(1000, 1000, 10)
-ConsoleWrite('moving to 1000 1000 ' & @CRLF)
-Sleep(5000)
+LeftClickLocation("main", "select application", 1000, 800, 1)
 
 
 ; do the work
-;ProcessRetainerAssignment($RetainerA, $retainerLocation)
-ProcessRetainerAssignment($RetainerB, $retainerLocation)
+ProcessRetainerAssignment($RetainerA, $retainerLocation)
+;ProcessRetainerAssignment($RetainerB, $retainerLocation)
 ;ProcessRetainerAssignment($RetainerC, $retainerLocation)
 
 ; make sure the last click goes thru before leaving
