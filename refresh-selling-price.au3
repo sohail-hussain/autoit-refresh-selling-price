@@ -28,10 +28,18 @@ Func processOneItem($message, $x, $y, $enableDebug)
 	LeftClickLocation ("processOneItem", $message & "item to update", $x, $y, $enableDebug)
 
 	; click on adjust price
-	LeftClickLocation ("processOneItem", $message & "adjust price", $x + 100, $y, $enableDebug)
+	clickOnImage("processOneItem", $message & " adjust price", "adjust price.png");
 
-; click on value
-	LeftClickLocation ("processOneItem", $message & "select value", $RetainerLocation[$value][0], $RetainerLocation[$value][1], $enableDebug)
+	; click on value
+	$imageName = "asking price.png"
+	Local $askingPrice = findImage($imageName)
+	If $askingPrice[0][0] <> 1 Then
+		ConsoleWrite("processOneItem: image not found on screen >>>" & $imageName & "<<<... exiting" & @CRLF)
+		Exit
+	EndIf
+	$newX = $askingPrice[1][0] + 1355 - 1185
+	ConsoleWrite('clickOnImage: ' & StringFormat("%s found at (%d, %d) clicking on (%d, %d)", $imageName, $askingPrice[1][0], $askingPrice[1][1], $newX, $askingPrice[1][1]) & @CRLF)
+	MouseClick("left", $newX, $askingPrice[1][1], 1, 10)
 
 	; send copy
 	;Send("^c")
@@ -40,46 +48,68 @@ Func processOneItem($message, $x, $y, $enableDebug)
 	Send("{CTRLDOWN}c{CTRLUP}")
 	$currentValue = ClipGet()
 	ConsoleWrite('processOneItem: After ^C clip buffer is >>>' & $currentValue & "<<<" & @CRLF)
+	Sleep(1000)
 
 	; click on compare price
-	LeftClickLocation ("processOneItem", $message & "compare price", $RetainerLocation[$comparePrice][0], $RetainerLocation[$comparePrice][1], $enableDebug)
+	clickOnImage("processOneItem", $message & " compare prices", "compare prices.png");
+
 
 	; click close compare price
-	LeftClickLocation ("processOneItem", $message & "close compare price", $RetainerLocation[$closeComparePrice][0], $RetainerLocation[$closeComparePrice][1], $enableDebug)
+	$imageName = "Search Results.png"
+	Local $searchResults = findImage($imageName)
+	If $searchResults[0][0] <> 1 Then
+		ConsoleWrite("processOneItem: image not found on screen >>>" & $imageName & "<<<... exiting" & @CRLF)
+		Exit
+	EndIf
+	$newX = $searchResults[1][0] + 1807 - 848 ; from where to click minus middle of image found
+	ConsoleWrite('clickOnImage: ' & StringFormat("%s found at (%d, %d) clicking on (%d, %d)", $imageName, $searchResults[1][0], $searchResults[1][1], $newX, $searchResults[1][1]) & @CRLF)
+	MouseClick("left", $newX, $searchResults[1][1], 1, 10)
 
 	; click on value
-	LeftClickLocation ("processOneItem", $message & "select value", $RetainerLocation[$value][0], $RetainerLocation[$value][1], $enableDebug)
+	Local $askingPrice = findImage($imageName)
+	If $askingPrice[0][0] <> 1 Then
+		ConsoleWrite("processOneItem: image not found on screen >>>" & $imageName & "<<<... exiting" & @CRLF)
+		Exit
+	EndIf
+	$newX = $askingPrice[1][0] + 1355 - 1185
+	ConsoleWrite('clickOnImage: ' & StringFormat("%s found at (%d, %d) clicking on (%d, %d)", $imageName, $askingPrice[1][0], $askingPrice[1][1], $newX, $askingPrice[1][1]) & @CRLF)
+	MouseClick("left", $newX, $askingPrice[1][1], 1, 10)
 
 	; send paste
 	;Send("^v")
 	$currentValue = ClipGet()
 	ConsoleWrite('processOneItem: Before ^V clip buffer is >>>' & $currentValue & "<<<" & @CRLF)
 	Send("{CTRLDOWN}v{CTRLUP}")
+
 	; click confirm
-	LeftClickLocation ("processOneItem", $message & "confirm", $RetainerLocation[$confirm][0], $RetainerLocation[$confirm][1], $enableDebug)
+	clickOnImage("processOneItem", $message & "confirm", "confirm.png");
 
 	ConsoleWrite('processOneItem: end' & $message & @CRLF)
 EndFunc
 
-Func ProcessMarketUpdate($RetainerNumber, $RetainerLocation, $enableDebug)
+Func ProcessMarketUpdate($RetainerImageFileName, $RetainerLocation, $enableDebug)
 	Global $RetainerOk, $RetainerQuit
 	Global $sellInventory, $sellRow1, $sellRow2, $sellRow3, $sellRow4
 	Global $sellRow5, $sellRow6, $sellRow7, $sellRow8, $sellRow9
 	Global $sellRow10, $sellRow11, $sellScroll, $sellExit
 	Global $scrollCount
 
-	ConsoleWrite('ProcessMarketUpdate: Retainer is ' & $RetainerNumber & @CRLF)
+	ConsoleWrite('ProcessMarketUpdate: $RetainerImageFileName is ' & $RetainerImageFileName & @CRLF)
 
 	; select the retainer
-	ConsoleWrite('ProcessMarketUpdate: left click on ' & $RetainerLocation[$RetainerNumber][0]& "," & $RetainerLocation[$RetainerNumber][1] & @CRLF)
-	LeftClickLocation ("ProcessMarketUpdate", "select retainer", $RetainerLocation[$RetainerNumber][0], $RetainerLocation[$RetainerNumber][1], $enableDebug)
+	clickOnImage("ProcessMarketUpdate", "select retainer", $RetainerImageFileName);
 	LeftClickLocation ("ProcessMarketUpdate", "OK", $RetainerLocation[$RetainerOk][0], $RetainerLocation[$RetainerOk][1], $enableDebug)
 
 	; now click select items in your inventory
-	LeftClickLocation ("ProcessMarketUpdate", "Report", $RetainerLocation[$sellInventory][0], $RetainerLocation[$sellInventory][1], $enableDebug)
+	clickOnImage("ProcessMarketUpdate", "sell from inventory", "sell items in inventory.png");
+
+	processOneItem("row1", $RetainerLocation[$sellRow1][0], $RetainerLocation[$sellRow1][1], $enableDebug)
+
+
+	ConsoleWrite('ProcessMarketUpdate: stopping' & @CRLF)
+	Exit
 
 	; loop thru 1st row N times
-	processOneItem("row1", $RetainerLocation[$sellRow1][0], $RetainerLocation[$sellRow1][1], $enableDebug)
 	processOneItem("row2", $RetainerLocation[$sellRow2][0], $RetainerLocation[$sellRow2][1], $enableDebug)
 	processOneItem("row3", $RetainerLocation[$sellRow3][0], $RetainerLocation[$sellRow3][1], $enableDebug)
 	processOneItem("row4", $RetainerLocation[$sellRow4][0], $RetainerLocation[$sellRow4][1], $enableDebug)
@@ -105,7 +135,7 @@ Func ProcessMarketUpdate($RetainerNumber, $RetainerLocation, $enableDebug)
 	LeftClickLocation ("ProcessMarketUpdate", "quit", $RetainerLocation[$RetainerQuit][0], $RetainerLocation[$RetainerQuit][1], $enableDebug)
 	LeftClickLocation ("ProcessMarketUpdate", "OK", $RetainerLocation[$RetainerOk][0], $RetainerLocation[$RetainerOk][1], $enableDebug)
 
-	ConsoleWrite('ProcessMarketUpdate: exit Retainer is ' & $RetainerNumber & @CRLF)
+	ConsoleWrite('ProcessMarketUpdate: exit ' & $RetainerImageFileName & @CRLF)
 EndFunc
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -119,43 +149,12 @@ $configSectionName = "RefreshSellingPrice"
 
 ConsoleWrite('Main: Start of Program' & $programName & @CRLF)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;
-; start of image experiment
-;
-#include "ImageSearchDLL_UDF.au3"
-
-; Search for a button on screen
-$fileName = "Miner-weapons-gear.png"
-If not FileExists($fileName) Then
-    MsgBox(0, "Error", "File " & $fileName & " not found!")
-    Exit
-EndIf
-Local $aResult = _ImageSearch($fileName)
-If @error Then
-    MsgBox(0, "Error", "Could not open file " & $fileName & "!")
-EndIf
-ConsoleWrite("main: UBound($aResult) type is " & VarGetType(UBound($aResult)) & " the value is >>>" & UBound($aResult) & "<<<" & @CRLF)
-ConsoleWrite("main: $aResult type is " & VarGetType($aResult) & " the value is >>>" & $aResult & "<<<" & @CRLF)
-ConsoleWrite("main: $aResult[0][0] type is " & VarGetType($aResult[0][0]) & " the value is >>>" & $aResult[0][0] & "<<<" & @CRLF)
-If UBound($aResult) > 0 Then
-    ConsoleWrite("Found at: " & $aResult[1][0] & ", " & $aResult[1][1] & @CRLF)
-    MouseClick("left", $aResult[1][0], $aResult[1][1])
-Else
-    ConsoleWrite("Image not found" & @CRLF)
-EndIf
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;
-; stop
-;
-ConsoleWrite('main: stopping before the code' & @CRLF)
-Exit
-
 ; do the work
-;ProcessMarketUpdate($RetainerA, $retainerLocation, 1)
-ProcessMarketUpdate($RetainerB, $retainerLocation, 1)
-;ProcessMarketUpdate($RetainerC, $retainerLocation, 1)
+
+;ProcessMarketUpdate("Miner-weapons-gear.png", $retainerLocation, 1)
+;ProcessMarketUpdate("Botanist-armor-sales.png", $retainerLocation, 1)
+ProcessMarketUpdate("Retainer-ccc.png", $retainerLocation, 1)
+
 ConsoleWrite('main: after process' & @CRLF)
 ; make sure the last click goes thru before leaving
 Sleep(5000)

@@ -6,6 +6,43 @@
 #ce ----------------------------------------------------------------------------
 
 #include-once
+#include "ImageSearchDLL_UDF.au3"
+
+;
+; called to click on the image on the screen
+;       not finding image is fatal
+;
+Func clickOnImage($caller, $reason, $imageName)
+	Local $aResult = findImage($imageName)
+	If $aResult[0][0] <> 1 Then
+		ConsoleWrite('clickOnImage: ' & StringFormat("%s: %s image not found on screen >>>%s<<< ... exiting", $caller, $reason, $imageName) & @CRLF)
+		Exit
+	EndIf
+	ConsoleWrite('clickOnImage: ' & StringFormat("%s found at (%d, %d)", $imageName, $aResult[1][0], $aResult[1][1]) & @CRLF)
+	MouseClick("left", $aResult[1][0], $aResult[1][1], 1, 10)
+EndFunc
+
+;
+; called to find an image on the screen
+;
+Func findImage($imageFileName, $numberOfRetries = 5, $sleepInterval = 1000)
+	If not FileExists($imageFileName) Then
+		ConsoleWrite("findImage: fatal: unable to find file  " & $imageFileName & @CRLF)
+		exit
+    EndIf
+
+	For $i = 1 To $numberOfRetries
+		Local $aResult = _ImageSearch($imageFileName)
+		If $aResult[0][0] = 0 Then
+			; we did not find it
+			Sleep($sleepInterval)
+			Sleep(2000)
+		Else
+			Return $aResult
+		EndIf
+	Next
+	return $aResult
+EndFunc
 
 ;
 ; called to move to a location and click left click
