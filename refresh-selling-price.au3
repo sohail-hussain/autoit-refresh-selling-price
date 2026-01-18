@@ -21,6 +21,7 @@ EndFunc
 Func processOneItem($message, $x, $y, $enableDebug)
 	Global $RetainerLocation
 	Global $adjustPrice, $value, $comparePrice, $closeComparePrice
+	Global $confirm
 
 	ConsoleWrite('processOneItem: ' & StringFormat("%s (%d, %d)", $message, $x, $y) & @CRLF)
 	; click on the item to be updated
@@ -61,7 +62,7 @@ Func processOneItem($message, $x, $y, $enableDebug)
 EndFunc
 
 Func ProcessMarketUpdate($RetainerNumber, $RetainerLocation, $enableDebug)
-	Global $RetainerOk
+	Global $RetainerOk, $RetainerQuit
 	Global $sellInventory, $sellRow1, $sellRow2, $sellRow3, $sellRow4
 	Global $sellRow5, $sellRow6, $sellRow7, $sellRow8, $sellRow9
 	Global $sellRow10, $sellRow11, $sellScroll, $sellExit
@@ -117,6 +118,39 @@ $configSectionName = "RefreshSellingPrice"
 #include "mainFunctions.au3"
 
 ConsoleWrite('Main: Start of Program' & $programName & @CRLF)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;
+; start of image experiment
+;
+#include "ImageSearchDLL_UDF.au3"
+
+; Search for a button on screen
+$fileName = "Miner-weapons-gear.png"
+If not FileExists($fileName) Then
+    MsgBox(0, "Error", "File " & $fileName & " not found!")
+    Exit
+EndIf
+Local $aResult = _ImageSearch($fileName)
+If @error Then
+    MsgBox(0, "Error", "Could not open file " & $fileName & "!")
+EndIf
+ConsoleWrite("main: UBound($aResult) type is " & VarGetType(UBound($aResult)) & " the value is >>>" & UBound($aResult) & "<<<" & @CRLF)
+ConsoleWrite("main: $aResult type is " & VarGetType($aResult) & " the value is >>>" & $aResult & "<<<" & @CRLF)
+ConsoleWrite("main: $aResult[0][0] type is " & VarGetType($aResult[0][0]) & " the value is >>>" & $aResult[0][0] & "<<<" & @CRLF)
+If UBound($aResult) > 0 Then
+    ConsoleWrite("Found at: " & $aResult[1][0] & ", " & $aResult[1][1] & @CRLF)
+    MouseClick("left", $aResult[1][0], $aResult[1][1])
+Else
+    ConsoleWrite("Image not found" & @CRLF)
+EndIf
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;
+; stop
+;
+ConsoleWrite('main: stopping before the code' & @CRLF)
+Exit
 
 ; do the work
 ;ProcessMarketUpdate($RetainerA, $retainerLocation, 1)
