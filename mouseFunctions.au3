@@ -11,9 +11,9 @@
 ; called to move to a location and click left click
 ;
 Func LeftClickLocation($caller, $message, $x, $y, $enableDebug)
-	Local $pauseTimeBeforeMove = 2 * $enableDebug
+	Local $pauseTimeBeforeMove = 0 * $enableDebug
 	Local $pauseTimeBeforeClick = 2 * $enableDebug
-	Local $pauseTimeAfterClick = 2 * $enableDebug
+	Local $pauseTimeAfterClick = 0 * $enableDebug
 
 	ConsoleWrite('LeftClickLocation: ' & StringFormat("%s: %s (%d, %d) %d", $caller, $message, $x, $y, $enableDebug) & @CRLF)
 

@@ -162,6 +162,6 @@ ConsoleWrite('Main: ' & StringFormat("winName is %s", $winName) & @CRLF)
 
 ; grab the window
 $hWin = WinGetHandle($winName)
-LeftClickLocation("main", "select application", 1000, 800, 1)
+LeftClickLocation("main", "select application", 1000, 800, 0)
 
 
