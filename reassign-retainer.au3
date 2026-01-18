@@ -20,43 +20,6 @@ Func ExitOnCondition($condition, $message)
     EndIf
 EndFunc
 
-;~ reads location of retainer as array from ini file
-Func ReadRetainerLocation($iniFile, $section)
-	Global $RetainerA, $RetainerB, $RetainerC, $RetainerOk, $RetainerQuit
-	Global $VentureReport, $VentureReassign, $VentureConfirm, $VentureAssign
-	Global $RetainerLocationArraySize
-	Local $RetainerLocation[$RetainerLocationArraySize][2]
-	ConsoleWrite('ReadRetainerLocation: RetainerA is ' & $RetainerA & @CRLF)
-    $RetainerLocation[$RetainerA][0] = IniRead($iniFile, $section, 'retainerA_x', '')
-	$RetainerLocation[$RetainerA][1] = IniRead($iniFile, $section, 'retainerA_y', '')
-
-    $RetainerLocation[$RetainerB][0] = IniRead($iniFile, $section, 'retainerB_x', '')
-	$RetainerLocation[$RetainerB][1] = IniRead($iniFile, $section, 'retainerB_y', '')
-
-	$RetainerLocation[$RetainerC][0] = IniRead($iniFile, $section, 'retainerC_x', '')
-	$RetainerLocation[$RetainerC][1] = IniRead($iniFile, $section, 'retainerC_y', '')
-
-	$RetainerLocation[$RetainerOk][0] = IniRead($iniFile, $section, 'retainerOk_x', '')
-	$RetainerLocation[$RetainerOk][1] = IniRead($iniFile, $section, 'retainerOk_y', '')
-
-	$RetainerLocation[$RetainerQuit][0] = IniRead($iniFile, $section, 'retainerQuit_x', '')
-	$RetainerLocation[$RetainerQuit][1] = IniRead($iniFile, $section, 'retainerQuit_y', '')
-
-	$RetainerLocation[$VentureReport][0] = IniRead($iniFile, $section, 'ventureReport_x', '')
-	$RetainerLocation[$VentureReport][1] = IniRead($iniFile, $section, 'ventureReport_y', '')
-
-	$RetainerLocation[$VentureReassign][0] = IniRead($iniFile, $section, 'ventureReassign_x', '')
-	$RetainerLocation[$VentureReassign][1] = IniRead($iniFile, $section, 'ventureReassign_y', '')
-
-	$RetainerLocation[$VentureConfirm][0] = IniRead($iniFile, $section, 'ventureConfirm_x', '')
-	$RetainerLocation[$VentureConfirm][1] = IniRead($iniFile, $section, 'ventureConfirm_y', '')
-
-	$RetainerLocation[$VentureAssign][0] = IniRead($iniFile, $section, 'ventureAssign_x', '')
-	$RetainerLocation[$VentureAssign][1] = IniRead($iniFile, $section, 'ventureAssign_y', '')
-
-	Return $RetainerLocation
-EndFunc
-
 
 Func ProcessRetainerAssignment($RetainerNumber, $RetainerLocation)
 	Global $RetainerOk
@@ -86,42 +49,22 @@ Func ProcessRetainerAssignment($RetainerNumber, $RetainerLocation)
 
 EndFunc
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;
+; main program
+;
 
-; Script Start - Add your code below here
-#include <MsgBoxConstants.au3>
+; define the config section, then include the main config reader
+$configSectionName = "ReassignRetainer"
+#include "mainFunctions.au3"
 
-ConsoleWrite('Main: Start of Program' & @CRLF)
-
-$RetainerA = 0
-$RetainerB = 1
-$RetainerC = 2
-$RetainerOk = 3
-$RetainerQuit = 4
-$VentureReport = 5
-$VentureReassign = 6
-$VentureConfirm = 7
-$VentureAssign = 8
-$RetainerLocationArraySize = 9
-
-$iniFile = 'config.ini'
-
-; read from the config file
-$programName = IniRead($iniFile, 'ReassignRetainer', 'ProgramName', '')
-$winName = IniRead($iniFile, 'ReassignRetainer', 'WindowName', '')
-$sleepTime = IniRead($iniFile, 'ReassignRetainer', 'sleepTime', '')
-$retainerLocation = ReadRetainerLocation($iniFile, 'Retainer')
-ConsoleWrite('Main: ' & StringFormat("winName is %s", $winName) & @CRLF)
-
-; grab the window
-$hWin = WinGetHandle($winName)
-LeftClickLocation("main", "select application", 1000, 800, 1)
-
+ConsoleWrite('Main: Start of Program' & $programName & @CRLF)
 
 ; do the work
 ProcessRetainerAssignment($RetainerA, $retainerLocation)
 ;ProcessRetainerAssignment($RetainerB, $retainerLocation)
 ;ProcessRetainerAssignment($RetainerC, $retainerLocation)
-
+ConsoleWrite('main: after process' & @CRLF)
 ; make sure the last click goes thru before leaving
 Sleep(5000)
 ConsoleWrite('Main: End of Program' & @CRLF)

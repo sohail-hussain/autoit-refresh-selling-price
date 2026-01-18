@@ -1,6 +1,5 @@
 #cs ----------------------------------------------------------------------------
 
-	 AutoIt Version: 3.3.18.0
 	 Author:         Sohail Hussain
 	 Script Function: mouse moving and location functions
 
@@ -11,12 +10,12 @@
 ;
 ; called to move to a location and click left click
 ;
-Func LeftClickLocation($caller, $message, $x, $y, $sleepTimeMultiplier)
-	Local $pauseTimeBeforeMove = 5 * $sleepTimeMultiplier
-	Local $pauseTimeBeforeClick = 5 * $sleepTimeMultiplier
-	Local $pauseTimeAfterClick = 5 * $sleepTimeMultiplier
+Func LeftClickLocation($caller, $message, $x, $y, $enableDebug)
+	Local $pauseTimeBeforeMove = 2 * $enableDebug
+	Local $pauseTimeBeforeClick = 2 * $enableDebug
+	Local $pauseTimeAfterClick = 2 * $enableDebug
 
-	ConsoleWrite('LeftClickLocation: ' & StringFormat("%s: %s (%d, %d) %d", $caller, $message, $x, $y, $sleepTimeMultiplier) & @CRLF)
+	ConsoleWrite('LeftClickLocation: ' & StringFormat("%s: %s (%d, %d) %d", $caller, $message, $x, $y, $enableDebug) & @CRLF)
 
 	If $pauseTimeBeforeMove >  0 Then
 		ConsoleWrite('LeftClickLocation: ' & StringFormat("sleeping %d sec before moving to (%d, %d)", $pauseTimeBeforeMove, $x, $y) & @CRLF)

@@ -1,0 +1,90 @@
+;~ init code.#include <MsgBoxConstants.au3>
+;~ init code.
+;~ init code.Func _WinAPI_GetKeyState($iKey)
+;~ init code.    Local $aResult = DllCall("User32.dll", "int", "GetKeyState", "int", $iKey)
+;~ init code.    ExitOnCondition(@error, 'Error getting numlock state')
+;~ init code.    Return $aResult[0]
+;~ init code.EndFunc
+;~ init code.
+;~ init code.;~ stops program execution if condition fails
+;~ init code.Func ExitOnCondition($condition, $message)
+;~ init code.    If $condition Then
+;~ init code.        MsgBox($MB_OK, 'Program stopped', StringFormat('%s\nCrafted %s items in %s seconds', $message, $totalItems, $totalTime))
+;~ init code.        Exit 1 
+;~ init code.    EndIf
+;~ init code.EndFunc
+;~ init code.
+;~ init code.;~ parses key data for macroses
+;~ init code.Func ParseMacros($iniFile, $sectionPrefix)
+;~ init code.    Local $sections = IniReadSectionNames($iniFile)
+;~ init code.
+;~ init code.    ExitOnCondition(@error, StringFormat('Error parsing [%s]', $iniFile))
+;~ init code.
+;~ init code.    Local $macros = ObjCreate('System.Collections.ArrayList')
+;~ init code.
+;~ init code.    For $i = 1 To $sections[0]
+;~ init code.        If StringLeft($sections[$i], StringLen($sectionPrefix)) = $sectionPrefix Then
+;~ init code.            $macros.Add(ReadKeyData($iniFile, $sections[$i]))
+;~ init code.        EndIf
+;~ init code.    Next
+;~ init code.
+;~ init code.    Return $macros
+;~ init code.EndFunc
+;~ init code.
+;~ init code.Func IsPositiveInteger($value)
+;~ init code.    Return StringIsInt($value) And $value > 0
+;~ init code.EndFunc
+;~ init code.
+;~ init code.;~ checks if key data is correct
+;~ init code.Func CheckKeyData($keyData)
+;~ init code.    Return $keyData[0] <> '' And IsPositiveInteger($keyData[1])
+;~ init code.EndFunc
+;~ init code.
+;~ init code.;~ reads key data as array from ini file
+;~ init code.Func ReadKeyData($iniFile, $section, $check = True)
+;~ init code.    Local $keyData[2]
+;~ init code.    $keyData[0] = IniRead($iniFile, $section, 'Key', '')
+;~ init code.    $keyData[1] = IniRead($iniFile, $section, 'Time', 0)
+;~ init code.    ExitOnCondition($check = True And Not CheckKeyData($keyData), StringFormat('Incorrect values in [%s] section', $section))
+;~ init code.    Return $keyData
+;~ init code.EndFunc
+;~ init code.
+;~ init code.Func SendControlAndSleep($hWin, $winName, $key, $sleepTime)
+;~ init code.    ExitOnCondition(Not (IsHWnD ($hWin) and WinExists ($winName) <> '0'), 'There is no game window')
+;~ init code.    ControlSend($hWin, "", "", $key)
+;~ init code.    Sleep($sleepTime * 1000)
+;~ init code.    $totalTime += $sleepTime
+;~ init code.EndFunc
+;~ init code.
+;~ init code.
+;~ init code.$iniFile = 'config.ini'
+;~ init code.
+;~ init code.$winName = IniRead($iniFile, 'General', 'WindowName', '')
+;~ init code.$hWin = WinGetHandle($winName)
+;~ init code.
+;~ init code.$timeLimit = IniRead($iniFile, 'General', 'TimeLimit', 0)
+;~ init code.$totalTime = 0
+;~ init code.
+;~ init code.$maxItems = IniRead($iniFile, 'General', 'MaxItems', 0)
+;~ init code.$totalItems = 0
+;~ init code.
+;~ init code.ExitOnCondition(Not IsPositiveInteger($timeLimit) And Not IsPositiveInteger($maxItems), 'Either time or item limit should be specified!')
+;~ init code.
+;~ init code.$macros = ParseMacros($iniFile, IniRead($iniFile, 'General', 'MacroSectionPrefix', 'Macro'))
+;~ init code.ExitOnCondition($macros.Count = 0, 'There is no macro data in config')
+;~ init code.
+;~ init code.While 1
+;~ init code.    ExitOnCondition((IsPositiveInteger($timeLimit) And $totalTime >= $timeLimit) Or (IsPositiveInteger($maxItems) And $totalItems >= $maxItems), 'Finished!')
+;~ init code.    ExitOnCondition(Not _WinAPI_GetKeyState(0x90), 'Numlock is disabled')
+;~ init code.
+;~ init code.    For $i = 0 To 4
+;~ init code.        SendControlAndSleep($hWin, $winName, '{NUMPAD0}', 1)
+;~ init code.    Next
+;~ init code.
+;~ init code.    For $i = 0 To $macros.Count - 1
+;~ init code.        $item = $macros.Item($i)
+;~ init code.        SendControlAndSleep($hWin, $winName, $item[0], $item[1])
+;~ init code.    Next
+;~ init code.
+;~ init code.    $totalItems += 1
+;~ init code.WEnd
