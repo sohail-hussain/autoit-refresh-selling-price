@@ -26,7 +26,11 @@ EndFunc
 Func myMouseClick($button, $x, $y, $count, $speed)
 	MouseMove($x, $y, 10)
 	MouseDown($button)
-	Sleep($speed)
+	; 1. used 1000 - always worked
+	;Sleep($speed)
+	; 2. 500 seems reliable
+	;Sleep(500)
+	Sleep(250)
 	MouseUp($button)
 EndFunc
 
@@ -34,7 +38,7 @@ EndFunc
 ;
 ; called to find an image on the screen
 ;
-Func findImage($imageFileName, $numberOfRetries = 5, $sleepInterval = 1000)
+Func findImage($imageFileName, $numberOfRetries = 5, $sleepInterval = 2000)
 	If not FileExists($imageFileName) Then
 		ConsoleWrite("findImage: fatal: unable to find file  " & $imageFileName & @CRLF)
 		exit
@@ -45,7 +49,7 @@ Func findImage($imageFileName, $numberOfRetries = 5, $sleepInterval = 1000)
 		If $aResult[0][0] = 0 Then
 			; we did not find it
 			Sleep($sleepInterval)
-			Sleep(2000)
+			;Sleep(2000)
 		Else
 			Return $aResult
 		EndIf
@@ -58,7 +62,7 @@ EndFunc
 ;
 Func LeftClickLocation($caller, $message, $x, $y, $enableDebug)
 	Local $pauseTimeBeforeMove = 0 * $enableDebug
-	Local $pauseTimeBeforeClick = 2 * $enableDebug
+	Local $pauseTimeBeforeClick = 0 * $enableDebug
 	Local $pauseTimeAfterClick = 0 * $enableDebug
 
 	ConsoleWrite('LeftClickLocation: ' & StringFormat("%s: %s (%d, %d) %d", $caller, $message, $x, $y, $enableDebug) & @CRLF)

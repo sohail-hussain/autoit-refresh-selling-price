@@ -6,6 +6,7 @@
 #ce ----------------------------------------------------------------------------
 
 #include <MsgBoxConstants.au3>
+#include <WinAPISys.au3>
 
 #include "mouseFunctions.au3"
 
@@ -30,25 +31,32 @@ Func processOneItem($message, $x, $y, $enableDebug)
 	; click on adjust price
 	clickOnImage("processOneItem", $message & " adjust price", "adjust price.png");
 
-	; click on value
-	$imageName = "asking price.png"
-	Local $askingPrice = findImage($imageName)
-	If $askingPrice[0][0] <> 1 Then
-		ConsoleWrite("processOneItem: image not found on screen >>>" & $imageName & "<<<... exiting" & @CRLF)
-		Exit
-	EndIf
-	$newX = $askingPrice[1][0] + 1355 - 1185
-	ConsoleWrite('processOneItem: ' & StringFormat("%s found at (%d, %d) clicking on (%d, %d)", $imageName, $askingPrice[1][0], $askingPrice[1][1], $newX, $askingPrice[1][1]) & @CRLF)
-	myMouseClick("left", $newX, $askingPrice[1][1], 1, 1000)
-
-	; send copy
-	;Send("^c")
-	$currentValue = ClipGet()
-	ConsoleWrite('processOneItem: Before ^C clip buffer is >>>' & $currentValue & "<<<" & @CRLF)
-	Send("{CTRLDOWN}c{CTRLUP}")
-	$currentValue = ClipGet()
-	ConsoleWrite('processOneItem: After ^C clip buffer is >>>' & $currentValue & "<<<" & @CRLF)
-	Sleep(1000)
+;	; click on value
+;	$imageName = "asking price.png"
+;	Local $askingPrice = findImage($imageName)
+;	If $askingPrice[0][0] <> 1 Then
+;		ConsoleWrite("processOneItem: image not found on screen >>>" & $imageName & "<<<... exiting" & @CRLF)
+;		Exit
+;	EndIf
+;	$newX = $askingPrice[1][0] + 1355 - 1185
+;	ConsoleWrite('processOneItem: ' & StringFormat("%s found at (%d, %d) clicking on (%d, %d)", $imageName, $askingPrice[1][0], $askingPrice[1][1], $newX, $askingPrice[1][1]) & @CRLF)
+;	myMouseClick("left", $newX, $askingPrice[1][1], 1, 1000)
+;
+;	; send copy
+;	;Send("^c")
+	ClipPut("KnownValueSetByMyProgram")
+;	$currentValue = ClipGet()
+;	ConsoleWrite('processOneItem: Before ^C clip buffer is >>>' & $currentValue & "<<<" & @CRLF)
+;;	Send("{CTRLDOWN}c{CTRLUP}")
+;	_WinAPI_Keybd_Event(0x11, 0) ; Press CTRL down
+;	;0x30 - 0x39 - (0 - 9) key
+;	;0x41 - 0x5A - (A - Z) key
+;	_WinAPI_Keybd_Event(0x43, 0) ; Press C down
+;	_WinAPI_Keybd_Event(0x43, 2) ; Lift V up
+;	_WinAPI_Keybd_Event(0x11, 2) ; Lift CTRL up
+;	$currentPrice = ClipGet()
+;	ConsoleWrite('processOneItem: After ^C clip buffer is >>>' & $currentPrice & "<<<" & @CRLF)
+;	Sleep(1000)
 
 	; click on compare price
 	clickOnImage("processOneItem", $message & " compare prices", "compare prices.png");
@@ -65,25 +73,53 @@ Func processOneItem($message, $x, $y, $enableDebug)
 	ConsoleWrite('processOneItem: ' & StringFormat("%s found at (%d, %d) clicking on (%d, %d)", $imageName, $searchResults[1][0], $searchResults[1][1], $newX, $searchResults[1][1]) & @CRLF)
 	myMouseClick("left", $newX, $searchResults[1][1], 1, 1000)
 
-	; click on value
-	$imageName = "asking price.png"
-	Local $askingPrice = findImage($imageName)
-	If $askingPrice[0][0] <> 1 Then
-		ConsoleWrite("processOneItem: image not found on screen >>>" & $imageName & "<<<... exiting" & @CRLF)
-		Exit
-	EndIf
-	$newX = $askingPrice[1][0] + 1355 - 1185
-	ConsoleWrite('processOneItem: ' & StringFormat("%s found at (%d, %d) clicking on (%d, %d)", $imageName, $askingPrice[1][0], $askingPrice[1][1], $newX, $askingPrice[1][1]) & @CRLF)
-	myMouseClick("left", $newX, $askingPrice[1][1], 1, 1000)
+	; after clicking the close compare price the buffer should contain the new price
+	$newPrice = ClipGet()
+	If "KnownValueSetByMyProgram" = $newPrice Then
+		ConsoleWrite("processOneItem: price did not change" & @CRLF)
+	Else
+		; click on value
+		$imageName = "asking price.png"
+		Local $askingPrice = findImage($imageName)
+		If $askingPrice[0][0] <> 1 Then
+			ConsoleWrite("processOneItem: image not found on screen >>>" & $imageName & "<<<... exiting" & @CRLF)
+			Exit
+		EndIf
+		$newX = $askingPrice[1][0] + 1355 - 1185
+		ConsoleWrite('processOneItem: ' & StringFormat("%s found at (%d, %d) clicking on (%d, %d)", $imageName, $askingPrice[1][0], $askingPrice[1][1], $newX, $askingPrice[1][1]) & @CRLF)
+		myMouseClick("left", $newX, $askingPrice[1][1], 1, 1000)
 
-	; send paste
-	;Send("^v")
-	$currentValue = ClipGet()
-	ConsoleWrite('processOneItem: Before ^V clip buffer is >>>' & $currentValue & "<<<" & @CRLF)
-	Send("{CTRLDOWN}v{CTRLUP}")
+		; send paste
+		;Send("^v") ; 1. tried send ^C - fails sometimes
+		;Send("{CTRLDOWN}v{CTRLUP}")  2. tried sending {CTRLDOWN}v{CTRLUP} - fails sometimes
+		; 3. tried getting position before send {CTRLDOWN}v{CTRLUP} - fails sometimes
+		$currentValue = ClipGet()
+		Local $aPos = MouseGetPos()
+		;MouseClick("left", $aPos[0], $aPos[1], 1, 1000)
+		;ConsoleWrite('processOneItem: Before ^V clip buffer is >>>' & $currentValue & "<<<" & @CRLF)
+		ConsoleWrite('processOneItem: ' & StringFormat("Before ^V clip buffer is >>>%s<<< at (%d, %d)", $currentValue, $aPos[0], $aPos[1]) & @CRLF)
+
+		; tried 4. tried keyb eveents - fails sometimes
+		;_WinAPI_Keybd_Event(0x11, 0) ; Press CTRL down
+		;_WinAPI_Keybd_Event(0x56, 0) ; Press V down
+		;_WinAPI_Keybd_Event(0x56, 2) ; Lift V up
+		;_WinAPI_Keybd_Event(0x11, 2) ; Lift CTRL up
+		; 5. try sleep between key sends
+		$keyDelay = 250
+		Sleep($keyDelay)
+		Send("{CTRLDOWN}")
+		Sleep($keyDelay)
+		Send("v")
+		Sleep($keyDelay)
+		Send("{CTRLUP}")
+
+
+		;Sleep(10000)
+	EndIf
 
 	; click confirm
 	clickOnImage("processOneItem", $message & "confirm", "confirm.png");
+	;Exit
 
 	ConsoleWrite('processOneItem: end' & $message & @CRLF)
 EndFunc
@@ -164,8 +200,8 @@ ConsoleWrite('Main: Start of Program' & $programName & @CRLF)
 ; do the work
 
 ProcessMarketUpdate("Miner-weapons-gear.png", $retainerLocation, 1)
-ProcessMarketUpdate("Botanist-armor-sales.png", $retainerLocation, 1)
-ProcessMarketUpdate("Retainer-ccc.png", $retainerLocation, 1)
+;ProcessMarketUpdate("Botanist-armor-sales.png", $retainerLocation, 1)
+;ProcessMarketUpdate("Retainer-ccc.png", $retainerLocation, 1)
 
 ConsoleWrite('main: after process' & @CRLF)
 ; make sure the last click goes thru before leaving
