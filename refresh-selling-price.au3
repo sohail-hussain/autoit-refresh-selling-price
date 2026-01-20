@@ -39,7 +39,7 @@ Func processOneItem($message, $x, $y, $enableDebug)
 	EndIf
 	$newX = $askingPrice[1][0] + 1355 - 1185
 	ConsoleWrite('processOneItem: ' & StringFormat("%s found at (%d, %d) clicking on (%d, %d)", $imageName, $askingPrice[1][0], $askingPrice[1][1], $newX, $askingPrice[1][1]) & @CRLF)
-	MouseClick("left", $newX, $askingPrice[1][1], 1, 10)
+	myMouseClick("left", $newX, $askingPrice[1][1], 1, 1000)
 
 	; send copy
 	;Send("^c")
@@ -63,9 +63,10 @@ Func processOneItem($message, $x, $y, $enableDebug)
 	EndIf
 	$newX = $searchResults[1][0] + 1807 - 848 ; from where to click minus middle of image found
 	ConsoleWrite('processOneItem: ' & StringFormat("%s found at (%d, %d) clicking on (%d, %d)", $imageName, $searchResults[1][0], $searchResults[1][1], $newX, $searchResults[1][1]) & @CRLF)
-	MouseClick("left", $newX, $searchResults[1][1], 1, 10)
+	myMouseClick("left", $newX, $searchResults[1][1], 1, 1000)
 
 	; click on value
+	$imageName = "asking price.png"
 	Local $askingPrice = findImage($imageName)
 	If $askingPrice[0][0] <> 1 Then
 		ConsoleWrite("processOneItem: image not found on screen >>>" & $imageName & "<<<... exiting" & @CRLF)
@@ -73,7 +74,7 @@ Func processOneItem($message, $x, $y, $enableDebug)
 	EndIf
 	$newX = $askingPrice[1][0] + 1355 - 1185
 	ConsoleWrite('processOneItem: ' & StringFormat("%s found at (%d, %d) clicking on (%d, %d)", $imageName, $askingPrice[1][0], $askingPrice[1][1], $newX, $askingPrice[1][1]) & @CRLF)
-	MouseClick("left", $newX, $askingPrice[1][1], 1, 10)
+	myMouseClick("left", $newX, $askingPrice[1][1], 1, 1000)
 
 	; send paste
 	;Send("^v")
@@ -98,10 +99,10 @@ Func ProcessMarketUpdate($RetainerImageFileName, $RetainerLocation, $enableDebug
 
 	; select the retainer
 	clickOnImage("ProcessMarketUpdate", "select retainer", $RetainerImageFileName);
-	Sleep(1000)
-	Local $aPos = MouseGetPos()
-	MouseClick("left", $aPos[0], $aPos[1], 1, 20)
-	;LeftClickLocation ("ProcessMarketUpdate", "OK", $RetainerLocation[$RetainerOk][0], $RetainerLocation[$RetainerOk][1], $enableDebug)
+	;Sleep(1000)
+	;Local $aPos = MouseGetPos()
+	;MouseClick("left", $aPos[0], $aPos[1], 1, 1000)
+	LeftClickLocation ("ProcessMarketUpdate", "OK", $RetainerLocation[$RetainerOk][0], $RetainerLocation[$RetainerOk][1], $enableDebug)
 
 	; now click select items in your inventory
 	clickOnImage("ProcessMarketUpdate", "sell from inventory", "sell items in inventory.png");
@@ -135,7 +136,7 @@ Func ProcessMarketUpdate($RetainerImageFileName, $RetainerLocation, $enableDebug
 	EndIf
 	$newX = $searchResults[1][0] + 1726 - 910 ; from where to click minus middle of image found
 	ConsoleWrite('ProcessMarketUpdate: ' & StringFormat("%s found at (%d, %d) clicking on (%d, %d)", $imageName, $searchResults[1][0], $searchResults[1][1], $newX, $searchResults[1][1]) & @CRLF)
-	MouseClick("left", $newX, $searchResults[1][1], 1, 10)
+	myMouseClick("left", $newX, $searchResults[1][1], 1, 1000)
 
 
 	; lastly quit

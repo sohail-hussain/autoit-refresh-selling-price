@@ -19,9 +19,17 @@ Func clickOnImage($caller, $reason, $imageName)
 		Exit
 	EndIf
 	ConsoleWrite('clickOnImage: ' & StringFormat("%s found at (%d, %d)", $imageName, $aResult[1][0], $aResult[1][1]) & @CRLF)
-	MouseClick("left", $aResult[1][0], $aResult[1][1], 1, 10)
+	myMouseClick("left", $aResult[1][0], $aResult[1][1], 1, 1000)
 	Sleep(500)
 EndFunc
+
+Func myMouseClick($button, $x, $y, $count, $speed)
+	MouseMove($x, $y, 10)
+	MouseDown($button)
+	Sleep($speed)
+	MouseUp($button)
+EndFunc
+
 
 ;
 ; called to find an image on the screen
@@ -65,7 +73,7 @@ Func LeftClickLocation($caller, $message, $x, $y, $enableDebug)
 		ConsoleWrite('LeftClickLocation: ' & StringFormat("sleeping %d sec before clicking on (%d, %d)", $pauseTimeBeforeClick, $x, $y) & @CRLF)
 		Sleep($pauseTimeBeforeClick * 1000)
 	EndIf
-	MouseClick ( "left", $x, $y, 1, 10)
+	myMouseClick ( "left", $x, $y, 1, 1000)
 
 	If $pauseTimeAfterClick >  0 Then
 		ConsoleWrite('LeftClickLocation: ' & StringFormat("sleeping %d sec after moving to (%d, %d)", $pauseTimeAfterClick, $x, $y) & @CRLF)
