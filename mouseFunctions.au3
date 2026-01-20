@@ -20,6 +20,7 @@ Func clickOnImage($caller, $reason, $imageName)
 	EndIf
 	ConsoleWrite('clickOnImage: ' & StringFormat("%s found at (%d, %d)", $imageName, $aResult[1][0], $aResult[1][1]) & @CRLF)
 	MouseClick("left", $aResult[1][0], $aResult[1][1], 1, 10)
+	Sleep(500)
 EndFunc
 
 ;
@@ -64,7 +65,7 @@ Func LeftClickLocation($caller, $message, $x, $y, $enableDebug)
 		ConsoleWrite('LeftClickLocation: ' & StringFormat("sleeping %d sec before clicking on (%d, %d)", $pauseTimeBeforeClick, $x, $y) & @CRLF)
 		Sleep($pauseTimeBeforeClick * 1000)
 	EndIf
-	MouseClick ( "left", $x, $y, 1, 1)
+	MouseClick ( "left", $x, $y, 1, 10)
 
 	If $pauseTimeAfterClick >  0 Then
 		ConsoleWrite('LeftClickLocation: ' & StringFormat("sleeping %d sec after moving to (%d, %d)", $pauseTimeAfterClick, $x, $y) & @CRLF)
