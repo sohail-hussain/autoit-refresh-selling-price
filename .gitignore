@@ -1,2 +1,5 @@
 ImageSearchDLL_x86.dll
 ImageSearchDLL_TestSuite.au3
+*.json
+*.ana
+*.json.html

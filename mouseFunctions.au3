@@ -20,7 +20,8 @@ Func clickOnImage($caller, $reason, $imageName)
 	EndIf
 	ConsoleWrite('clickOnImage: ' & StringFormat("%s found at (%d, %d)", $imageName, $aResult[1][0], $aResult[1][1]) & @CRLF)
 	myMouseClick("left", $aResult[1][0], $aResult[1][1], 1, 1000)
-	Sleep(500)
+	;Sleep(500)
+	Sleep(250)
 EndFunc
 
 Func myMouseClick($button, $x, $y, $count, $speed)

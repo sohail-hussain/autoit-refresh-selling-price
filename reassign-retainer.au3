@@ -21,29 +21,29 @@ Func ExitOnCondition($condition, $message)
 EndFunc
 
 
-Func ProcessRetainerAssignment($RetainerNumber, $RetainerLocation)
+Func ProcessRetainerAssignment($RetainerImageFileName, $RetainerNumber, $RetainerLocation)
 	Global $RetainerOk
 	Local $sleepTime = 1
 
-	ConsoleWrite('ReadRetainerLocation: Retainer is ' & $RetainerNumber & @CRLF)
+	ConsoleWrite('ReadRetainerLocation: Retainer is ' & $RetainerImageFileName & @CRLF)
 ;	Sleep($sleepTime * 1000)
 
 ; select the retainer
-	ConsoleWrite('ProcessRetainer: left click on ' & $RetainerLocation[$RetainerNumber][0]& "," & $RetainerLocation[$RetainerNumber][1] & @CRLF)
-	LeftClickLocation ("ProcessRetainerAssignment", "select retainer", $RetainerLocation[$RetainerNumber][0], $RetainerLocation[$RetainerNumber][1], $sleepTime)
+	clickOnImage("ProcessMarketUpdate", "select retainer", $RetainerImageFileName);
 	LeftClickLocation ("ProcessRetainerAssignment", "OK", $RetainerLocation[$RetainerOk][0], $RetainerLocation[$RetainerOk][1], $sleepTime)
 
 	; now click report
-	LeftClickLocation ("ProcessRetainerAssignment", "Report", $RetainerLocation[$VentureReport][0], $RetainerLocation[$VentureReport][1], $sleepTime)
+	clickOnImage("ProcessMarketUpdate", "venture complete", "venture complete.png");
 
 	; next reassign
-	LeftClickLocation ("ProcessRetainerAssignment", "reassign", $RetainerLocation[$VentureReassign][0], $RetainerLocation[$VentureReassign][1], $sleepTime)
+	clickOnImage("ProcessMarketUpdate", "reassign", "reassign.png");
 
 	; next assign
-	LeftClickLocation ("ProcessRetainerAssignment", "assign", $RetainerLocation[$VentureAssign][0], $RetainerLocation[$VentureAssign][1], $sleepTime)
+	clickOnImage("ProcessMarketUpdate", "assign", "assign.png");
+	LeftClickLocation ("ProcessRetainerAssignment", "OK", $RetainerLocation[$RetainerOk][0], $RetainerLocation[$RetainerOk][1], $sleepTime)
 ; may need an ok click
 	; lastly quit
-	LeftClickLocation ("ProcessRetainerAssignment", "quit", $RetainerLocation[$RetainerQuit][0], $RetainerLocation[$RetainerQuit][1], $sleepTime)
+	clickOnImage("ProcessMarketUpdate", "quit", "quit.png");
 	LeftClickLocation ("ProcessRetainerAssignment", "OK", $RetainerLocation[$RetainerOk][0], $RetainerLocation[$RetainerOk][1], $sleepTime)
 ; may need an ok click
 
@@ -61,9 +61,11 @@ $configSectionName = "ReassignRetainer"
 ConsoleWrite('Main: Start of Program' & $programName & @CRLF)
 
 ; do the work
-ProcessRetainerAssignment($RetainerA, $retainerLocation)
-;ProcessRetainerAssignment($RetainerB, $retainerLocation)
-;ProcessRetainerAssignment($RetainerC, $retainerLocation)
+ProcessRetainerAssignment("Miner-weapons-gear.png", $RetainerA, $retainerLocation)
+ProcessRetainerAssignment("Botanist-armor-sales.png", $RetainerB, $retainerLocation)
+ProcessRetainerAssignment("Retainer-ccc.png", $RetainerC, $retainerLocation)
+
+
 ConsoleWrite('main: after process' & @CRLF)
 ; make sure the last click goes thru before leaving
 Sleep(5000)

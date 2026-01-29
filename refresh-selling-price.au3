@@ -161,7 +161,7 @@ Func ProcessMarketUpdate($RetainerImageFileName, $RetainerLocation, $enableDebug
 		processOneItem("row10", $RetainerLocation[$sellRow10][0], $RetainerLocation[$sellRow10][1], $enableDebug)
 	Next
 	; last one
-	processOneItem("row11", $RetainerLocation[$sellRow11][0], $RetainerLocation[$sellRow11][1], $enableDebug)
+	;processOneItem("row11", $RetainerLocation[$sellRow11][0], $RetainerLocation[$sellRow11][1], $enableDebug)
 
 	; exit market
 	$imageName = "markets.png"
@@ -200,8 +200,8 @@ ConsoleWrite('Main: Start of Program' & $programName & @CRLF)
 ; do the work
 
 ProcessMarketUpdate("Miner-weapons-gear.png", $retainerLocation, 1)
-;ProcessMarketUpdate("Botanist-armor-sales.png", $retainerLocation, 1)
-;ProcessMarketUpdate("Retainer-ccc.png", $retainerLocation, 1)
+ProcessMarketUpdate("Botanist-armor-sales.png", $retainerLocation, 1)
+ProcessMarketUpdate("Retainer-ccc.png", $retainerLocation, 1)
 
 ConsoleWrite('main: after process' & @CRLF)
 ; make sure the last click goes thru before leaving
